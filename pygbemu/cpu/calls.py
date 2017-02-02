@@ -1,5 +1,7 @@
 
 from .instructions import instruction
+from .stack import push
+from .jumps import jump
 
 
 def call(cpu, mem, target):

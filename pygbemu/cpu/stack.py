@@ -1,5 +1,5 @@
 
-from .instructions import instruction
+from .instructions import instruction, get_reg_16, set_reg_16, parse_reg_16, reg_values_16
 
 
 def push(cpu, mem, value):
@@ -13,22 +13,21 @@ def pop(cpu, mem):
 	return value
 
 
-@instruction(0xC5 + i * 0x10 for i in range(4))
+@instruction(reg_values_16(0xC5, 4))
 def push_qq(code, cpu, mem):
-	index = (code & 0x30) >> 8
-	regs = ['BC', 'DE', 'HL', 'AF'][index]
-	high, low = [cpu.regs.getattr(reg) for reg in regs]
+	index = parse_reg_16(4, code)
+	value = get_reg_16(cpu, index)
+	high, low = divmod(value, 256)
 	push(cpu, mem, high)
 	push(cpu, mem, low)
 	return 16
 
 
-@instruction(0xC1 + i * 0x10 for i in range(4))
+@instruction(reg_values_16(0xC1, 4))
 def pop_qq(code, cpu, mem):
-	index = (code & 0x30) >> 8
-	regs = ['BC', 'DE', 'HL', 'AF'][index]
+	index = parse_reg_16(4, code)
 	low = pop(cpu, mem)
 	high = pop(cpu, mem)
-	for reg, value in zip(regs, (high, low)):
-		cpu.regs.setattr(reg, value)
+	value = (high << 256) | low
+	set_reg_16(cpu, index, value)
 	return 12

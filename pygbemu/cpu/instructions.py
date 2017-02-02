@@ -46,3 +46,58 @@ def _register(map, parts, fn):
 		if callable(submap):
 			raise ValueError("opcode collision with opcode prefix")
 		_register(submap, parts, fn)
+
+
+# Helpers for parsing register specification from opcodes
+
+REG_TABLE_8BIT = {
+	0: 'B',
+	1: 'C',
+	2: 'D',
+	3: 'E',
+	4: 'H',
+	5: 'L',
+	7: 'A',
+}
+
+REG_TABLE_16BIT = {
+	0: 'BC',
+	1: 'DE',
+	2: 'HL',
+	3: 'AF',
+}
+
+def get_reg(table, cpu, index):
+	reg = table[index]
+	return getattr(cpu.regs, reg)
+
+def get_reg_8(cpu, index):
+	return get_reg(REG_TABLE_8BIT, cpu, index)
+
+def get_reg_16(cpu, index):
+	return get_reg(REG_TABLE_16BIT, cpu, index)
+
+def set_reg(table, cpu, index, value):
+	reg = table[index]
+	setattr(cpu.regs, reg, value)
+
+def set_reg_8(cpu, index, value):
+	set_reg(REG_TABLE_8BIT, cpu, index, value)
+
+def set_reg_16(cpu, index, value):
+	set_reg(REG_TABLE_16BIT, cpu, index, value)
+
+def reg_values(table, base, shift):
+	return [base | (n << shift) for n in table]
+
+def reg_values_8(shift):
+	return reg_values(REG_TABLE_8BIT, shift)
+
+def reg_values_16(shift):
+	return reg_values(REG_TABLE_16BIT, shift)
+
+def parse_reg_8(shift, code):
+	return (code >> shift) & 7
+
+def parse_reg_16(shift, code):
+	return (code >> shift) & 3
