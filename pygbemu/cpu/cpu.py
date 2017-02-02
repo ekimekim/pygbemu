@@ -42,11 +42,11 @@ class CPU(object):
 	(though frankly, I'll be surprised if this implementation can achieve such speeds)
 	You should calculate this number by calling cpu.calc_realtime(num_cycles).
 	"""
-	def __init__(self, memory):
+	def __init__(self, system):
 		self.regs = Registers()
 		self.time = 0
 		self.freq = 4190000 # 4.19MHz
-		self.mem = memory
+		self.mem = system.memory
 		self.interrupts_enabled = False
 		self.interrupt_mask = 0
 		self.pending_interrupts = 0
