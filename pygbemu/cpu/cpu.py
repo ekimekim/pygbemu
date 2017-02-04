@@ -47,10 +47,10 @@ class CPU(object):
 	INT_VBLANK, INT_LCD_STATUS, INT_TIMER, INT_SERIAL, INT_JOYPAD = range(5)
 
 	def __init__(self, system):
+		self.system = system
 		self.regs = Registers()
 		self.time = 0
 		self.freq = 4190000 # 4.19MHz
-		self.mem = system.memory
 		self.interrupts_enabled = False
 		self.interrupt_mask = 0
 		self.pending_interrupts = 0
@@ -71,7 +71,7 @@ class CPU(object):
 
 	def fetch(self):
 		"""Fetch next byte from the PC, return it and increment PC"""
-		value = self.mem[self.regs.PC]
+		value = self.system.mem[self.regs.PC]
 		if self.halt_quirk:
 			self.halt_quirk = False
 		else:
@@ -88,7 +88,7 @@ class CPU(object):
 		# stop ends only on keypress
 		if self.stopped and self.pending_interrupts & (1 << self.INT_JOYPAD):
 			self.stopped = False
-			self.mem[ADDR_LCD_CONTROL] = self.stopped_prev_lcd_value
+			self.system.mem[ADDR_LCD_CONTROL] = self.stopped_prev_lcd_value
 
 		# this value might change again during run step, so save it
 		interrupts_enabled_next = self.interrupts_enabled_next
@@ -121,7 +121,7 @@ class CPU(object):
 				addr=start_addr,
 				code=' '.join('{:02x}'.format(code) for code in full_opcode)
 			))
-		return decoded(full_opcode, self, self.mem)
+		return decoded(full_opcode, self, self.system.mem)
 
 	def interrupt(self, int_num):
 		"""Trigger an interrupt of given number, which may occur immediately or when interrupts
@@ -133,4 +133,4 @@ class CPU(object):
 		self.interrupts_enabled = False
 		self.halted = False
 		self.pending_interrupts &= ~(1 << int_num) # clear pending bit
-		call(self, self.mem, handle_addr)
+		call(self, self.system.mem, handle_addr)

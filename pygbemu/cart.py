@@ -3,7 +3,8 @@
 from utils import get_all_subclasses, Blank, Offset
 
 
-def lookup_cart_type(indicator):
+def lookup_cart_type(contents):
+	indicator = contents[0x147]
 	for cls in {Cart} | get_all_subclasses(Cart):
 		if indicator in cls.type_codes:
 			return cls
