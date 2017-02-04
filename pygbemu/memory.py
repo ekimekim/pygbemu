@@ -1,12 +1,5 @@
 
-
-class Blank(object):
-	"""Dummy object that accepts setitem and getitem but doesn't take writes and only reads zeroes"""
-	def __getitem__(self, index):
-		return 0
-
-	def __setitem__(self, index, value):
-		pass
+from .utils import Blank
 
 
 class Proxy(object):
@@ -78,7 +71,8 @@ class Memory(object):
 			# ROM Switched bank
 			(0x4000, system.cart.rom_bank),
 			# VRAM
-			(0x8000, system.display.vram),
+			(0x8000, system.display.tile_data),
+			(0x9800, system.display.tile_maps),
 			# External bank-switched RAM
 			(0xA000, system.cart.ram_bank),
 			# Internal RAM
@@ -86,11 +80,11 @@ class Memory(object):
 			# Internal RAM echoed (covers same range as previous)
 			(0xE000, self.ram),
 			# Sprite RAM
-			(0xFE00, system.display.sprite_ram),
+			(0xFE00, system.display.sprite_data),
 			# Unused
 			(0xFEA0, blank),
 			# memory-mapped IO registers
-			(0xFF00, ioregs),
+			(0xFF00, self.ioregs),
 			# Unused
 			(0xFF4C, blank),
 			# High RAM (Internal RAM with faster access instructions)

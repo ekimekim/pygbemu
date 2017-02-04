@@ -1,5 +1,8 @@
 
 
+from .utils import get_all_subclasses, Blank, Offset
+
+
 def lookup_cart_type(indicator):
 	for cls in {Cart} | get_all_subclasses(Cart):
 		if indicator in cls.type_codes:
@@ -60,7 +63,7 @@ class Cart(object):
 			self.rom_bank = InterceptWrites(Offset(self.rom, self.ROM_BANK_SIZE * bank), self.rom_bank_write)
 
 	def set_ram_bank(self, bank):
-		if bank is None or bank => self.ram_banks:
+		if bank is None or bank >= self.ram_banks:
 			self.ram_bank = Blank()
 		else:
 			self.ram_bank = Offset(self.ram, self.RAM_BANK_SIZE * bank)

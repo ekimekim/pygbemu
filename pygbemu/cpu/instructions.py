@@ -10,15 +10,10 @@ eg. to match "10101010 1xxx1001", use @instruction(0xAA, [0x89 + 0x10*i for i in
 @instruction will handle the sub-mapping above.
 """
 
+from ..utils import iterable
+
+
 instruction_map = {}
-
-
-def iterable(x):
-	try:
-		iter(x)
-	except TypeError:
-		return False
-	return True
 
 
 def instruction(*parts):

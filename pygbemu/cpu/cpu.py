@@ -9,6 +9,8 @@ from .calls import call
 # 'as if it had recycled a restart instruction'. A RST on the GB takes 32 cycles.
 INTERRUPT_HANDLE_TIME = 32
 
+ADDR_LCD_CONTROL = 0xFF41
+
 
 class RegPair(object):
 	def __init__(self, desc):
@@ -42,6 +44,8 @@ class CPU(object):
 	(though frankly, I'll be surprised if this implementation can achieve such speeds)
 	You should calculate this number by calling cpu.calc_realtime(num_cycles).
 	"""
+	INT_VBLANK, INT_LCD_STATUS, INT_TIMER, INT_SERIAL, INT_JOYPAD = range(5)
+
 	def __init__(self, system):
 		self.regs = Registers()
 		self.time = 0
@@ -82,7 +86,7 @@ class CPU(object):
 			self.halted = False
 
 		# stop ends only on keypress
-		if self.stopped and self.pending_interrupts & (1 << INT_JOYPAD):
+		if self.stopped and self.pending_interrupts & (1 << self.INT_JOYPAD):
 			self.stopped = False
 			self.mem[ADDR_LCD_CONTROL] = self.stopped_prev_lcd_value
 
