@@ -1,8 +1,8 @@
 
 import math
 
-from .instructions import instruction_map
-from .calls import call
+from instructions import instruction_map
+from calls import call
 
 
 # This is a guess. The Z80 manual describes handling an interrupt

@@ -1,5 +1,5 @@
 
-from .utils import Blank
+from utils import Blank
 
 
 class Proxy(object):

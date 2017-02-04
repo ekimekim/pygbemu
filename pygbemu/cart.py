@@ -1,6 +1,6 @@
 
 
-from .utils import get_all_subclasses, Blank, Offset
+from utils import get_all_subclasses, Blank, Offset
 
 
 def lookup_cart_type(indicator):

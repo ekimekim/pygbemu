@@ -1,6 +1,6 @@
 
-from .instructions import instruction
-from .cpu import ADDR_LCD_CONTROL
+from instructions import instruction
+from cpu import ADDR_LCD_CONTROL
 
 
 @instruction(0x00)

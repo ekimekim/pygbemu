@@ -1,5 +1,5 @@
 
-from .instructions import instruction
+from instructions import instruction
 
 
 def jump(cpu, mem, target):
